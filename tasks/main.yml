@@ -21,6 +21,7 @@
     user: "{{ authorisation_user }}"
     key: "https://github.com/{{ item }}.keys"
     state: present
+    comment: "# imported from github: {{ item }}"
   loop: "{{ authorisation_github_usernames }}"
 
 - name: Add other keys from folder
