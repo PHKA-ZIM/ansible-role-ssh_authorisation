@@ -1,4 +1,4 @@
-# SSH authorisation with ansible
+# SSH authorisation automation with ansible
 
 ## Installation steps
 

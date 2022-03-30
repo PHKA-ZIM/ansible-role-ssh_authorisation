@@ -1,3 +1,4 @@
 ---
+authorisation_user: "{{ ansible_user }}"
+authorisation_current_key_file: "~/.ssh/id_rsa.pub"
 authorisation_github_usernames: []
-
