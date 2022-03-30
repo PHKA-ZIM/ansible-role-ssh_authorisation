@@ -17,7 +17,7 @@
 
 - name: Add other keys from github
   become: true
-  ansible.posix.authourized_key:
+  ansible.posix.authorized_key:
     user: "{{ authorisation_user }}"
     key: "https://github.com/{{ item }}.keys"
     state: present
@@ -25,7 +25,7 @@
 
 - name: Add other keys from folder
   become: true
-  ansible.posix.authourized_key:
+  ansible.posix.authorized_key:
     user: "{{ authorisation_user }}"
     key: "{{ item }}"
     state: present
