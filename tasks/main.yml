@@ -1,0 +1,24 @@
+---
+- name: Remove all keys without current key
+  become: yes
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    exclusive: true
+    state: present
+
+- name: Add other keys from github
+  become: yes
+  ansible.posix.authourized_key:
+    user: "{{ ansible_user }}"
+    key: "https://github.com/{{ item }}.keys"
+    state: present
+  loop: "{{ authorisation_github_usernames }}"
+
+- name: Add other keys from folder
+  become: yes
+  ansible.posix.authourized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ item }}"
+    state: present
+  with_fileglob: './keys/*.pub'
