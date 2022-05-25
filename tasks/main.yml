@@ -8,7 +8,7 @@
     state: present
   when: ssh_authorisation_current_key_file | length > 0
 
-- name: Remove all keys - do not use if password auth is disabled and no other user allows key auth
+- name: Remove all keys - do not use if password auth is disabled or other user allows key auth
   become: true
   ansible.builtin.file:
     path: "/home/{{ ssh_authorisation_user }}/.ssh/authorized_keys"
@@ -25,9 +25,10 @@
   loop: "{{ ssh_authorisation_github_usernames }}"
 
 - name: Add other keys from folder
+  when: ssh_authorisation_local_key_path | length > 0
   become: true
   ansible.posix.authorized_key:
     user: "{{ ssh_authorisation_user }}"
     key: "{{ item }}"
     state: present
-  with_fileglob: './keys/*.pub'
+  with_fileglob: "{{ ssh_authorisation_local_key_path }}/*.pub"
