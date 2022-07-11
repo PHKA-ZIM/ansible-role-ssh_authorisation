@@ -31,6 +31,6 @@
   become: true
   ansible.posix.authorized_key:
     user: "{{ ssh_authorisation_user }}"
-    key: "{{ item }}"
+    key: "{{ lookup('file', '{{ item }}') }}"
     state: present
   with_fileglob: "{{ ssh_authorisation_local_key_path }}/*.pub"
