@@ -3,3 +3,4 @@ ssh_authorisation_user: "{{ ansible_user | default('root') }}"
 ssh_authorisation_current_key_file: ~/.ssh/id_rsa.pub
 ssh_authorisation_local_key_path: ""
 ssh_authorisation_github_usernames: []
+ssh_authorisation_exclusive: false

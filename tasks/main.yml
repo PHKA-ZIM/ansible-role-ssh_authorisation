@@ -4,7 +4,7 @@
   ansible.posix.authorized_key:
     user: "{{ ssh_authorisation_user }}"
     key: "{{ lookup('file', '{{ ssh_authorisation_current_key_file }}') }}"
-    exclusive: true
+    exclusive: "{{ ssh_authorisation_exclusive | bool }}"
     state: present
   when: ssh_authorisation_current_key_file | length > 0
 
@@ -13,7 +13,9 @@
   ansible.builtin.file:
     path: "/home/{{ ssh_authorisation_user }}/.ssh/authorized_keys"
     state: absent
-  when: ssh_authorisation_current_key_file | length == 0
+  when:
+    - ssh_authorisation_exclusive | bool
+    - ssh_authorisation_current_key_file | length == 0
 
 - name: Add other keys from github
   become: true
