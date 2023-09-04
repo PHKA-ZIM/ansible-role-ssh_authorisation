@@ -1,0 +1,18 @@
+---
+- name: Remove all keys without current key
+  when: ssh_authorisation_current_key_file | length > 0
+  become: true
+  ansible.posix.authorized_key:
+    user: "{{ ssh_authorisation_user }}"
+    key: "{{ lookup('file', '{{ ssh_authorisation_current_key_file }}') }}"
+    exclusive: "{{ ssh_authorisation_exclusive | bool }}"
+    state: present
+
+- name: Remove all keys - be aware of locking out yourself
+  when:
+    - ssh_authorisation_exclusive | bool
+    - ssh_authorisation_current_key_file | length == 0
+  become: true
+  ansible.builtin.file:
+    path: "/home/{{ ssh_authorisation_user }}/.ssh/authorized_keys"
+    state: absent
