@@ -10,5 +10,6 @@
 
 - name: Remove keys
   when: ssh_authorisation_uninstall == true
+  block:
     - name: Clean
       ansible.builtin.include_tasks: clean.yml
