@@ -1,18 +1,34 @@
 ---
-- name: Add keys from github
+- name: Add key from text
+  when:
+    - ssh_authorisation_type == key
+    - ssh_authorisation_key | length > 0
   become: true
   ansible.posix.authorized_key:
     user: "{{ ssh_authorisation_user }}"
-    key: "https://github.com/{{ item }}.keys"
+    key: "{{ ssh_authorisation_key }}"
     state: present
-    comment: "# imported from github: {{ item }}"
-  loop: "{{ ssh_authorisation_github_usernames }}"
+    exclusive: "{{ ssh_authorisation_exclusive | bool }}"
 
-- name: Add keys from folder
-  when: ssh_authorisation_local_key_path | length > 0
+- name: Add key from keyfile
+  when:
+    - ssh_authorisation_type == keyfile
+    - ssh_authorisation_local_keyfile | length > 0
   become: true
   ansible.posix.authorized_key:
     user: "{{ ssh_authorisation_user }}"
-    key: "{{ lookup('file', '{{ item }}') }}"
+    key: "{{ lookup('file', '{{ ssh_authorisation_local_keyfile }}') }}"
     state: present
-  with_fileglob: "{{ ssh_authorisation_local_key_path }}/*.pub"
+    exclusive: "{{ ssh_authorisation_exclusive | bool }}"
+
+- name: Add key from github
+  when:
+    - ssh_authorisation_type == github
+    - ssh_authorisation_github_username | length > 0
+  become: true
+  ansible.posix.authorized_key:
+    user: "{{ ssh_authorisation_user }}"
+    key: "https://github.com/{{ ssh_authorisation_github_username }}.keys"
+    state: present
+    exclusive: "{{ ssh_authorisation_exclusive | bool }}"
+    comment: "# imported from github: {{ ssh_authorisation_github_username }}"

@@ -1,17 +1,38 @@
 ---
-- name: Remove all keys without current key
-  when: ssh_authorisation_current_key_file | length > 0
+---
+- name: Add key from text
+  when:
+    - ssh_authorisation_type == key
+    - ssh_authorisation_key | length > 0
   become: true
   ansible.posix.authorized_key:
     user: "{{ ssh_authorisation_user }}"
-    key: "{{ lookup('file', '{{ ssh_authorisation_current_key_file }}') }}"
-    exclusive: "{{ ssh_authorisation_exclusive | bool }}"
-    state: present
+    key: "{{ ssh_authorisation_key }}"
+    state: absent
+
+- name: Add key from keyfile
+  when:
+    - ssh_authorisation_type == keyfile
+    - ssh_authorisation_local_keyfile | length > 0
+  become: true
+  ansible.posix.authorized_key:
+    user: "{{ ssh_authorisation_user }}"
+    key: "{{ lookup('file', '{{ ssh_authorisation_local_keyfile }}') }}"
+    state: absent
+
+- name: Add key from github
+  when:
+    - ssh_authorisation_type == github
+    - ssh_authorisation_github_username | length > 0
+  become: true
+  ansible.posix.authorized_key:
+    user: "{{ ssh_authorisation_user }}"
+    key: "https://github.com/{{ ssh_authorisation_github_username }}.keys"
+    state: absent
 
 - name: Remove all keys - be aware of locking out yourself
   when:
-    - ssh_authorisation_exclusive | bool
-    - ssh_authorisation_current_key_file | length == 0
+    - ssh_authorisation_type | length == 0
   become: true
   ansible.builtin.file:
     path: "/home/{{ ssh_authorisation_user }}/.ssh/authorized_keys"

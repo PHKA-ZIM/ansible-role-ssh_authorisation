@@ -1,14 +1,11 @@
 ---
-- name: Add keys
+- name: Add key
   when: ssh_authorisation_uninstall == false
   block:
-    - name: Clean
-      ansible.builtin.include_tasks: clean.yml
-
     - name: Setup
       ansible.builtin.include_tasks: setup.yml
 
-- name: Remove keys
+- name: Remove key
   when: ssh_authorisation_uninstall == true
   block:
     - name: Clean
