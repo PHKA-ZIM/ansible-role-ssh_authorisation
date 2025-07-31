@@ -1,7 +1,7 @@
 ---
 - name: Add key from text
   when:
-    - ssh_authorisation_type == key
+    - ssh_authorisation_type == "key"
     - ssh_authorisation_key | length > 0
   become: true
   ansible.posix.authorized_key:
@@ -12,7 +12,7 @@
 
 - name: Add key from keyfile
   when:
-    - ssh_authorisation_type == keyfile
+    - ssh_authorisation_type == "keyfile"
     - ssh_authorisation_local_keyfile | length > 0
   become: true
   ansible.posix.authorized_key:
@@ -23,7 +23,7 @@
 
 - name: Add key from github
   when:
-    - ssh_authorisation_type == github
+    - ssh_authorisation_type == "github"
     - ssh_authorisation_github_username | length > 0
   become: true
   ansible.posix.authorized_key:
