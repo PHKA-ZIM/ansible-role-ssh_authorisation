@@ -17,7 +17,7 @@
   become: true
   ansible.posix.authorized_key:
     user: "{{ ssh_authorisation_user }}"
-    key: "{{ lookup('file', '{{ ssh_authorisation_local_keyfile }}') }}"
+    key: "{{ lookup('ansible.builtin.file', ssh_authorisation_local_keyfile) }}"
     state: present
     exclusive: "{{ ssh_authorisation_exclusive | bool }}"
 
